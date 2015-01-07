@@ -43,7 +43,7 @@ namespace czy {
                 const double* y,const double* yi,size_t length
                 ,double& out_ssr,double& out_sse,double& out_sst,double& out_rmse,double& out_RSquare)
             {
-                double y_mean = Mean(y,length);
+                double y_mean = mean(y,y+length);
                 out_ssr = 0.0;
                 for (size_t i =0;i<length;++i)
                 {

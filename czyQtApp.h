@@ -49,6 +49,28 @@ namespace czy{
 				return false;
 			}
 		};
+		    class QPointEx : public QPoint
+		    {
+			    public:
+			QPointEx():QPoint(){}
+			QPointEx(int xpos, int ypos):QPoint(xpos,ypos){}
+			///
+			/// \brief 重载 < 使得可用于Map
+			/// \param a
+			/// \param b
+			/// \return
+			///
+			friend bool operator<(const QPointEx &a,const QPointEx &b){
+			    if(a.x() < b.x() && a.y() <= b.y())
+				return true;
+			    if(a.x() == b.x() && a.y() < b.y()  )
+				return true;
+			    if(a.x() > b.x() && a.y() < b.y()  )
+				return true;
+			    return false;
+			}
+		    };
+	
 	}
 }
 

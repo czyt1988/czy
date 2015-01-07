@@ -26,185 +26,189 @@ namespace czy{
         const double PI = 3.1415926535897932384626;
         const double PI2 = 6.2831853071795864769252;
 
-//        ///
-//        /// \brief 判断一个数字是否是2的n次幂
-//        /// \param 如果该数字为2的n次幂则返回true，否则返回false
-//        /// \return
-//        ///
-//        bool IsPowOfTwo(size_t num)
-//        {
-//            return !(num &(num-1));
-//        }
         ///
         /// \brief 对数组求和
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double Sum(const T* pArr,size_t length)
-        {
-            double total(0.0);
-            for(size_t i(0);i<length;++i){
-                total += pArr[i];
-            }
-            return total;
-        }
-        ///
-        /// \brief 对数组求和 形式为vector
-        ///
-        template <typename T>
-        double Sum(const std::vector<T>& v)
-        {
-            double total(0.0);
-            auto iteEnd = v.end();
-            for(auto ite = v.begin();ite != iteEnd;++ite){
-                total += (*ite);
-            }
-            return total;
-        }
+		template <typename IT> inline
+		double sum(const IT _begin,const IT _end)
+		{
+			IT it = _begin;
+			double total(0.0);
+			for(;it!=_end;++it){
+				total += *it;
+			}
+			return total;
+		}
         ///
         /// \brief 求平均值的模版函数
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double Mean(const T* pArr,size_t length)
+        template <typename IT> inline
+        double mean(const IT _begin,const IT _end)
         {
-            return Sum(pArr,length)/length;
-        }
-        ///
-        /// \brief 求vector元素的平均值
-        /// \param v 需要求解均值的vector
-        /// 例如：double avx = czy::Math::Mean<double>(x);其中x是个vector<double>
-        ///
-        template <typename T>
-        double Mean(const std::vector<T>& v)
-        {
-            return Mean<T>(&v[0],v.size());
+            return sum(_begin,_end)/(_end - _begin);
         }
         ///
         /// \brief 求序列的方差 - 为n-1类型既是序列是随机抽样不是固定值
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double Var(const T* pArr,size_t length)
+        template <typename IT> inline
+        double var(const IT _begin,const IT _end)
         {
-            double mean = Math::Mean(pArr,length);
-            double var(0);
-            for(size_t i(0);i<length;++i)
+            double m = Math::mean(_begin,_end);
+            double d(0);
+			IT it = _begin;
+            for(;it!=_end;++it)
             {
-                var += (mean - pArr[i]) * (mean - pArr[i]);
+                d += ((m - (*it)) * (m - (*it)));
             }
+			size_t length = _end - _begin;
             if(length>1)
                 length -= 1;//随机序列的方差要减去1
             return var/length;
         }
-        template <typename T>
-        double Var(const std::vector<T>& v)
-        {
-            return Var<T>(&v[0],v.size());
-        }
         ///
         /// \brief 求序列的标准差 - 为n-1类型既是序列是随机抽样不是固定值
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double StdVar(const T* pArr,size_t length)
+        template <typename IT> inline
+        double std_var(const IT _begin,const IT _end)
         {
-            double var = Var(pArr,length);
-            return sqrt(var);
+            double v = var(_begin,_end);
+            return sqrt(v);
         }
-        template <typename T>
-        double StdVar(const std::vector<T>& v)
-        {
-            return StdVar<T>(&v[0],v.size());
-        }
+		///
+		/// \brief 求序列的n阶中心矩
+		///
+		/// 均值为1阶中心矩，方差为特殊的2阶矩
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
+		///
+		template <typename IT> inline
+		double central_moment(const IT _begin,const IT _end,unsigned order)
+		{
+			double m = mean(_begin,_end);
+			double tmp(0),res(0);
+			size_t length = _end - _begin;
+			for(IT it = _begin;it!=_end;++it)
+			{
+				tmp = ((*it) - m);
+				res += pow(tmp,order);
+			}
+			res /= length;
+			return res;
+		}
+		///
+		/// \brief 求序列的n阶原点矩
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
+		///
+		template <typename IT> inline
+		double origin_moment(const IT _begin,const IT _end,unsigned order)
+		{
+			double res(0);
+			size_t length = _end - _begin;
+			for(IT it = _begin;it!=_end;++it)
+			{
+				res += pow(*it,order);
+			}
+			res /= length;
+			return res;
+		}
         ///
         /// \brief 求序列的斜度 - 3次矩
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double Skewness(const T* pArr,size_t length)
+        template <typename IT> inline
+        double skewness(const IT _begin,const IT _end)
         {
-            double s = StdVar(pArr,length);
-            double m = Mean(pArr,length);
-            double tmp(0),res(0);
-            for(size_t i(0);i<length;++i)
-            {
-                tmp = (pArr[i] - m);
-                res += (tmp*tmp*tmp);
-            }
-            res /= (length*s*s*s);
+            double s = std_var(_begin,_end);
+            double res = central_moment(_begin,_end,3);//先求3阶中心距
+            res /= (s*s*s);
             return res;
         }
-        template <typename T>
-        double Skewness(const std::vector<T>& v)
-        {
-            return Skewness<T>(&v[0],v.size());
-        }
+
         ///
         /// \brief 求序列的峰度(峭度) - 4次矩
-        /// \param pArr 需要求解的数组指针
-        /// \param length 指针长度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
         ///
-        template <typename T>
-        double Kurtosis(const T* pArr,size_t length)
+        template <typename IT> inline
+        double kurtosis(const IT _begin,const IT _end)
         {
-            double v = Var(pArr,length);
-            double m = Mean(pArr,length);
-            double tmp(0),res(0);
-            for(size_t i(0);i<length;++i)
-            {
-                tmp = (pArr[i] - m);
-                res += (tmp*tmp*tmp*tmp);
-            }
-            res /= (length*v*v);
+            double v = var(_begin,_end);
+            double res = central_moment(_begin,_end,4);//先求4阶中心距
+            res /= (v*v);
             return res;
         }
-        template <typename T>
-        double Kurtosis(const std::vector<T>& v)
-        {
-            return Kurtosis<T>(&v[0],v.size());
-        }
+		///
+		/// \brief 求序列的峰峰值
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
+		///
+		template <typename IT> inline
+		double peak_to_peak_value(const IT _begin,const IT _end)
+		{
+			return (*std::max_element(_begin,_end) - *std::min_element(_begin,_end));
+		}
         ///
         /// \brief 获取统计参数，包括和，均值，方差，标准差，斜度，峭度
+		/// \param _begin 数据开始迭代器
+		/// \param _end 数据结束迭代器
+		/// \param OUTPUT d_sum 序列的和
+		/// \param OUTPUT d_mean 序列的均值
+		/// \param OUTPUT d_var 序列的方差
+		/// \param OUTPUT d_std_var 序列的标准差
+		/// \param OUTPUT d_skewness 序列的斜度
+		/// \param OUTPUT d_kurtosis 序列的峭度
         ///
-        template <typename T>
-        void GetStatistics(const T* pArr,size_t length
-                           ,double& sum,double& mean,double& var,double& stdVar,double& skewness,double& kurtosis)
+        template <typename IT> inline
+        void get_statistics(const IT _begin,const IT _end
+                           ,OUTPUT double& d_sum
+						   ,OUTPUT double& d_mean
+						   ,OUTPUT double& d_var
+						   ,OUTPUT double& d_std_var
+						   ,OUTPUT double& d_skewness
+						   ,OUTPUT double& d_kurtosis)
         {
-            for(size_t i(0);i<length;++i){
-                sum += pArr[i];
-            }
-            mean = sum / length;
-            for(size_t i(0);i<length;++i)
-            {
-                var += (mean - pArr[i]) * (mean - pArr[i]);
-            }
-            length>1 ? var /= (length-1) : var /= length;
-            stdVar = sqrt(var);
-            double tmp(0);
-            for(size_t i(0);i<length;++i)
-            {
-                tmp = (pArr[i] - mean);
-                skewness += tmp*tmp*tmp;
-            }
-            skewness /= length*stdVar*stdVar*stdVar;
-            for(size_t i(0);i<length;++i)
-            {
-                tmp = (pArr[i] - mean);
-                kurtosis += tmp*tmp*tmp*tmp;
-            }
-            kurtosis /= length*var*var;
-        }
-        template <typename T>
-        void GetStatistics(const std::vector<T>& v
-                           ,double& sum,double& mean,double& var,double& stdVar,double& skewness,double& kurtosis)
-        {
-            return GetStatistics<T>(&v[0],v.size(),sum,mean,var,stdVar,skewness,kurtosis);
+			size_t length = _end - _begin;
+			IT it = _begin;
+			double d(0.0),tmp(0.0);
+
+			for(;it!=_end;++it){
+				d += *it;
+			}
+			d_sum = d;
+			//均值
+            d_mean = d_sum / length;
+			//方差
+			for(d=0,it = _begin;it!=_end;++it)
+			{
+				d += ((d_mean - (*it)) * (d_mean - (*it)));
+			}
+			if(length>1)
+				d_var = d/(length-1);//随机序列的方差要减去1
+			else		
+				d_var = d/length;
+			//标准差
+			d_std_var = sqrt(d_var);
+			//斜度,峭度
+			double dk(0.0),tmp2(0.0);
+			for(d=0,it = _begin;it!=_end;++it)
+			{
+				tmp = ((*it) - d_mean);
+				tmp2 = tmp*tmp*tmp;
+				d += tmp2;
+				dk += tmp2*tmp;
+			}
+			d_skewness /= (length*d_std_var*d_std_var*d_std_var);
+			d_kurtosis /= (length*d_var*d_var);
         }
 
 		//////////////////////////////////////////////////////////////////////////
