@@ -66,6 +66,7 @@ namespace czy {
             {
                 return gsl_spline_eval(m_spline, x, m_accel);
             }
+
             void getYs(INPUT const vector<double>& x
                          ,OUTPUT vector<double>& y) const
             {

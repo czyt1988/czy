@@ -54,7 +54,11 @@ namespace czy {
                 out_rmse = sqrt(out_sse/(double(length)));
                 out_RSquare = out_ssr/out_sst;
             }
-
+            ///
+            /// \brief 获取拟合的系数
+            /// \param n 0是0次方，1是1次方，value是对应的系数
+            /// \return 次幂对应的系数
+            ///
             double getFactor(double n)
             {
                 auto ite = m_factor.find(n);
@@ -62,28 +66,53 @@ namespace czy {
                     return 0.0;
                 return ite->second;
             }
+            ///
+            /// \brief 获取系数的个数
+            /// \return
+            ///
             size_t getFactorSize()
             {
                 return m_factor.size();
             }
-            //直线拟合
+            ///
+            /// \brief linearFit 线性拟合的静态函数
+            /// \param x 数据点的横坐标值数组
+            /// \param xstride 横坐标值数组索引步长 xstride 与 ystride 的值设为 1，表示数据点集 {(xi,yi)|i=0,1,⋯,n−1} 全部参与直线的拟合；
+            /// \param y 数据点的纵坐标值数组
+            /// \param ystride 纵坐标值数组索引步长
+            /// \param n 数据点的数量
+            /// \param out_intercept 计算的截距
+            /// \param out_slope 计算的斜率
+            /// \param out_interceptErr 计算的截距误差
+            /// \param out_slopeErr 计算的斜率误差
+            /// \param out_cov 计算的斜率和截距的相关度
+            /// \param out_wssr 拟合的wssr值
+            /// \return
+            ///
             static int linearFit(
-                const double *x       /* 数据点的横坐标值数组 */
-                ,const size_t xstride  /* 横坐标值数组索引步长 xstride 与 ystride 的值设为 1，表示数据点集 {(xi,yi)|i=0,1,⋯,n−1} 全部参与直线的拟合；*/
-                ,const double *y       /* 数据点的纵坐标值数组 */
-                ,const size_t ystride  /* 纵坐标值数组索引步长 */
-                ,size_t n              /* 数据点的数量 */
-                ,double& out_intercept /* 计算的截距 */
-                ,double& out_slope     /* 计算的斜率 */
-                ,double& out_interceptErr /* 计算的截距误差 */
-                ,double& out_slopeErr /* 计算的斜率误差 */
-                ,double& out_cov /* 计算的斜率和截距的相关度 */
-                ,double& out_wssr //拟合的wssr值
+                const double *x
+                ,const size_t xstride
+                ,const double *y
+                ,const size_t ystride
+                ,size_t n
+                ,double& out_intercept
+                ,double& out_slope
+                ,double& out_interceptErr
+                ,double& out_slopeErr
+                ,double& out_cov
+                ,double& out_wssr
                 )
             {
                 return gsl_fit_linear(x,xstride,y,ystride,n
                     ,&out_intercept,&out_slope,&out_interceptErr,&out_slopeErr,&out_cov,&out_wssr);
             }
+            ///
+            /// \brief  线性拟合
+            /// \param x 拟合的x值
+            /// \param y 拟合的y值
+            /// \param n x,y值对应的长度
+            /// \return
+            ///
             bool linearFit(const double *x,const double *y,size_t n)
             {
                 clearAll();

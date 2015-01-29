@@ -21,11 +21,48 @@ namespace czy{
 		public:
 			StandardItemModel(){}
 			~StandardItemModel(){}
-			typedef std::function<void(QStandardItem*)> callback_ergodicFun_ptr;
-			//typedef void(*callback_ergodicFun_ptr)(QStandardItem*);
-			static void ergodicAllItem(QStandardItemModel* model,callback_ergodicFun_ptr pFun);
-			static void ergodicItem(QStandardItem* item,callback_ergodicFun_ptr pFun);
-		private:
+            ///
+            /// \brief callback_ergodicFun_ptr 回调函数指针，bool f(QStandardItem*),bool用于决定是否继续，如果为true就继续递归，如果为false就停止递归
+            ///
+            typedef std::function<bool(QStandardItem*)> callback_ergodicFun_ptr;
+
+            //typedef void(*callback_ergodicFun_ptr)(QStandardItem*);
+            static void ergodicAllItem(QStandardItemModel* model,callback_ergodicFun_ptr pFun)
+            {
+                int rows = model->rowCount();
+                int column = model->columnCount();
+                for (int i=0;i<rows;++i)
+                {
+                    for(int j=0;j<column;++j)
+                    {
+                        QStandardItem* item = model->item(i,j);
+                        if (item)
+                        {
+                            if(!ergodicItem(item,pFun))
+                                return;
+                        }
+                    }
+                }
+            }
+
+            static bool ergodicItem(QStandardItem* item,callback_ergodicFun_ptr pFun)
+            {
+                int rows = item->rowCount();
+                int column = item->columnCount();
+                for (int i=0;i<rows;++i)
+                {
+                    for(int j=0;j<column;++j)
+                    {
+                        QStandardItem* childItem = item->child(i,j);
+                        if (childItem)
+                        {
+                            if(!ergodicItem(childItem,pFun))
+                                return false;
+                        }
+                    }
+                }
+                return pFun(item);
+            }
 		};
 
 		class NumberInputDialog:public QDialog{
