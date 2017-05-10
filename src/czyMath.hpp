@@ -21,6 +21,20 @@ namespace Math
 {
     ///
     /// \brief 对数组求和
+    /// \code
+    /// typedef  double DATA_TYPE;
+    /// vector<DATA_TYPE> datas;
+    /// cout << "datas:" << endl;
+    /// for(int i=0;i<10;++i)
+    /// {
+    ///     datas.push_back(i);
+    ///     cout << datas[i] << ",";
+    /// }
+    /// cout << endl;
+    /// double res = czy::Math::sum(data.begin(),data.end());
+    /// cout << "sum test:" << res << endl;
+    /// //45
+    /// \endcode
     /// \param _begin 数据开始迭代器
     /// \param _end 数据结束迭代器
     ///
@@ -36,6 +50,24 @@ namespace Math
     }
     ///
     /// \brief 求平均值的模版函数
+    /// \code
+    /// void mean()
+    /// {
+    ///     typedef  double DATA_TYPE;
+    ///     vector<DATA_TYPE> datas;
+    ///     cout << endl;
+    ///     cout << "datas:" << endl;
+    ///     for(int i=0;i<10;++i)
+    ///     {
+    ///         datas.push_back(i);
+    ///         cout << datas[i] << ",";
+    ///     }
+    ///     cout << endl;
+    ///     double res = czy::Math::mean(datas.begin(),datas.end());
+    ///     cout << "mean test:" << res << endl;
+    ///     //4.5
+    /// }
+    /// \endcode
     /// \param _begin 数据开始迭代器
     /// \param _end 数据结束迭代器
     ///
@@ -46,6 +78,24 @@ namespace Math
     }
     ///
     /// \brief 求序列的方差 - 为n-1类型既是序列是随机抽样不是固定值
+    /// \code
+    /// void var()
+    /// {
+    ///     typedef  double DATA_TYPE;
+    ///     vector<DATA_TYPE> datas;
+    ///     cout << endl;
+    ///     cout << "datas:" << endl;
+    ///     for(int i=0;i<10;++i)
+    ///     {
+    ///         datas.push_back(i);
+    ///         cout << datas[i] << ",";
+    ///     }
+    ///     cout << endl;
+    ///     double res = czy::Math::var(datas.begin(),datas.end());
+    ///     cout << "var test:" << res << endl;
+    ///     //9.1667
+    /// }
+    /// \endcode
     /// \param _begin 数据开始迭代器
     /// \param _end 数据结束迭代器
     ///
@@ -66,6 +116,24 @@ namespace Math
     }
     ///
     /// \brief 求序列的标准差 - 为n-1类型既是序列是随机抽样不是固定值
+    /// \code
+    /// void std_var()
+    /// {
+    ///     typedef  double DATA_TYPE;
+    ///     vector<DATA_TYPE> datas;
+    ///     cout << endl;
+    ///     cout << "datas:" << endl;
+    ///     for(int i=0;i<10;++i)
+    ///     {
+    ///         datas.push_back(i);
+    ///         cout << datas[i] << ",";
+    ///     }
+    ///     cout << endl;
+    ///     double res = czy::Math::std_var(datas.begin(),datas.end());
+    ///     cout << "std_var test:" << res << endl;
+    ///     //3.02765
+    /// }
+    /// \endcode
     /// \param _begin 数据开始迭代器
     /// \param _end 数据结束迭代器
     ///
