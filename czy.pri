@@ -1,8 +1,10 @@
-INCLUDEPATH += $$PWD\include
+INCLUDEPATH += $$PWD\src\
+DEPENDPATH += $$PWD\src\
 INCLUDEPATH += $$PWD\3rdParty\fftw
-DEPENDPATH += $$PWD\include
+
 
 HEADERS += \
-        $$PWD/czyMath.h \
+        $$PWD/src/czy.h \
+    $$PWD/src/czyMath.hpp
 
-LIBS += -L$$PWD\3rdParty\fftw -llibfftw3-3
+#LIBS += -L$$PWD\3rdParty\fftw -llibfftw3-3
